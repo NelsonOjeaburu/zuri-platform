@@ -1,0 +1,22 @@
+# Secrets — never commit real env files
+.env
+.env.*
+!.env.example
+
+# Terraform (Day 2)
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+crash.log
+
+# General
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# Health check evidence file — actually, DO commit this one deliberately
+# once it has a few days of entries, as your Section 11 evidence. Just
+# don't gitignore it. Left here as a reminder, not an active rule.
