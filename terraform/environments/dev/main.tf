@@ -44,3 +44,13 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
   value = module.networking.private_subnet_ids
 }
+
+module "ecr" {
+  source       = "../../modules/ecr"
+  name         = "zuri"
+  repositories = ["backend", "frontend"]
+}
+
+output "ecr_repository_urls" {
+  value = module.ecr.repository_urls
+}
