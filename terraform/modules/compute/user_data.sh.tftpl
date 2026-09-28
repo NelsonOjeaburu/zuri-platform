@@ -1,0 +1,24 @@
+#!/bin/bash
+set -eu
+exec > /var/log/zuri-bootstrap.log 2>&1
+
+dnf install -y docker git cronie
+systemctl enable --now docker crond
+
+# Read the API key using the server's IAM role. No key is stored on disk.
+API_KEY=$(aws secretsmanager get-secret-value --secret-id ${secret_id} --region ${region} --query SecretString --output text)
+
+mkdir -p /opt/zuri/scripts
+git clone ${backend_repo_url} /opt/zuri/backend
+docker build -t zuri-backend /opt/zuri/backend
+docker run -d --name zuri-backend --restart unless-stopped -p 80:5000 -e API_SECRET_KEY="$API_KEY" -e STORE_NAME="Zuri Market" zuri-backend
+
+# Daily health check, scheduled with cron.
+curl -fsSL ${health_check_script_url} -o /opt/zuri/scripts/health-check.sh
+sed -i 's/\r$//' /opt/zuri/scripts/health-check.sh
+chmod +x /opt/zuri/scripts/health-check.sh
+
+cat > /etc/cron.d/zuri-health << 'CRON'
+0 8 * * * root APP_URL=http://localhost/api/store REPORT_FILE=/var/log/zuri-health-report.log /opt/zuri/scripts/health-check.sh
+CRON
+chmod 644 /etc/cron.d/zuri-health
