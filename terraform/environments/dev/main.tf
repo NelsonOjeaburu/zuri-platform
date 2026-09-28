@@ -71,3 +71,18 @@ module "security" {
   vpc_id      = module.networking.vpc_id
   secret_arns = values(module.secrets.secret_arns)
 }
+
+module "compute" {
+  source                  = "../../modules/compute"
+  name                    = "zuri-dev"
+  subnet_id               = module.networking.public_subnet_ids[0]
+  security_group_id       = module.security.security_group_id
+  instance_profile_name   = module.security.instance_profile_name
+  secret_id               = "zuri-dev/backend-api-key"
+  backend_repo_url        = "https://github.com/NelsonOjeaburu/zuriapp-backend.git"
+  health_check_script_url = "https://raw.githubusercontent.com/NelsonOjeaburu/zuri-platform/main/scripts/health-check.sh"
+}
+
+output "app_public_ip" {
+  value = module.compute.public_ip
+}
