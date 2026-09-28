@@ -54,3 +54,13 @@ module "ecr" {
 output "ecr_repository_urls" {
   value = module.ecr.repository_urls
 }
+
+module "secrets" {
+  source       = "../../modules/secrets"
+  name         = "zuri-dev"
+  secret_names = ["backend-api-key"]
+}
+
+output "secret_arns" {
+  value = module.secrets.secret_arns
+}
