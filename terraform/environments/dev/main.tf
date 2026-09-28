@@ -64,3 +64,10 @@ module "secrets" {
 output "secret_arns" {
   value = module.secrets.secret_arns
 }
+
+module "security" {
+  source      = "../../modules/security"
+  name        = "zuri-dev"
+  vpc_id      = module.networking.vpc_id
+  secret_arns = values(module.secrets.secret_arns)
+}
