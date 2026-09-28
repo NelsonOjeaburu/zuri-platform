@@ -1,0 +1,46 @@
+terraform {
+  required_version = ">= 1.10"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+
+  # Remote state: stored in the S3 bucket from the bootstrap step.
+  # Backend blocks can't use variables, so the bucket name is written out.
+  backend "s3" {
+    bucket       = "zuri-tfstate-884404664929"
+    key          = "prod/terraform.tfstate"
+    region       = "us-east-1"
+    encrypt      = true
+    use_lockfile = true
+  }
+}
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+module "networking" {
+  source = "../../modules/networking"
+
+  name                 = "zuri-prod"
+  vpc_cidr             = "10.1.0.0/16"
+  azs                  = ["us-east-1a", "us-east-1b"]
+  public_subnet_cidrs  = ["10.1.1.0/24", "10.1.2.0/24"]
+  private_subnet_cidrs = ["10.1.101.0/24", "10.1.102.0/24"]
+}
+
+output "vpc_id" {
+  value = module.networking.vpc_id
+}
+
+output "public_subnet_ids" {
+  value = module.networking.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  value = module.networking.private_subnet_ids
+}
