@@ -31,5 +31,11 @@ resource "aws_instance" "app" {
   })
   user_data_replace_on_change = true
 
+  # Don't rebuild an already-running server just because a newer AMI
+  # was published. Only a deliberate change elsewhere should replace it.
+  lifecycle {
+    ignore_changes = [ami]
+  }
+
   tags = { Name = "${var.name}-app" }
 }
