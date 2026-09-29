@@ -86,3 +86,13 @@ module "compute" {
 output "app_public_ip" {
   value = module.compute.public_ip
 }
+
+module "github_oidc" {
+  source       = "../../modules/github-oidc"
+  name         = "zuri-dev"
+  github_repos = ["NelsonOjeaburu/zuriapp-backend", "NelsonOjeaburu/zuriapp-frontend"]
+}
+
+output "ci_role_arn" {
+  value = module.github_oidc.ci_role_arn
+}
