@@ -21,7 +21,7 @@ resource "aws_iam_role" "ci" {
         }
         StringLike = {
           "token.actions.githubusercontent.com:sub" = [
-            for r in var.github_repos : "repo:${r}:ref:refs/heads/main"
+            for r in var.github_repos : "repo:${split("/", r)[0]}@*/${split("/", r)[1]}@*:ref:refs/heads/main"
           ]
         }
       }
