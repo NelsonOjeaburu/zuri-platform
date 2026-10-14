@@ -126,7 +126,7 @@ Screenshots are in `docs/evidence/`:
 
 | Requirement | Evidence |
 |-------------|----------|
-| Terraform plan/apply, remote state | `terraform-apply.png`, `s3-state.png` |
+| Terraform plan/apply, remote state | `terraform-plan.png`, `s3-state.png` |
 | Pipeline passes (lint, test, quality gate, Trivy, push) | `ci-green.png` |
 | **Pipeline fails when something is wrong** | `ci-sonar-gate-failed.png`, `ci-sonar-gate-log.png` (a deliberately buggy change was blocked, then the pull request was closed unmerged) |
 | Trivy output in CI logs | `trivy-log.png` |
